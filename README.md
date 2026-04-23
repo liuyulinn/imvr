@@ -19,7 +19,7 @@
   <a href="https://cseweb.ucsd.edu/~haosu/">Hao Su</a>
 
 <p align="center">                                                                                                        
-    <img src="./assets/imvr-sim.gif" width="800" alt="imvr sim demo" />
+    <img src="./assets/teaser.png" width="1000" alt="imvr sim demo" />
 </p>                                                                                                                      
 
 
