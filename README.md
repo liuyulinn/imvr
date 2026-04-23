@@ -7,6 +7,11 @@
   <em>ImVR</em>: Immersive VR Teleoperation System for General Purpose</em>
 </h1>
 
+<div align="center">
+<a href='https://liuyulinn.github.io/imvr.github.io/'><img src='https://img.shields.io/badge/Project-Page-blue'></a>
+<a href='https://openreview.net/pdf?id=26wkb05i8h'><img src='https://img.shields.io/badge/Paper-Openreview-red'></a>
+<a href='https://liuyulinn.github.io/imvr-doc/'><img src='https://img.shields.io/badge/Doc-Page-blue'></a>
+</div>
 <p align="center">
   <a href="https://liuyulinn.github.io/">Yulin Liu</a><sup>*</sup>,
   <a href="https://alan-heoooh.github.io/">Zihao He</a><sup>*</sup>,
