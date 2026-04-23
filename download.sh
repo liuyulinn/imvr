@@ -56,13 +56,6 @@ if [ ! -d "vr_teleop/assets/agents" ] ; then
   rm -rf agents.tar.gz
 fi
 
-if [ ! -d "vr_teleop/assets/envs" ] ; then
-  gdown https://drive.google.com/uc?id=1aNZRe9JYdB3TqL8u-mqecMvpqyEbkiSE
-  mkdir -p ./vr_teleop/assets/envs
-  tar -xzf envs.tar.gz -C ./vr_teleop/assets/
-  rm -rf envs.tar.gz
-fi
-
 if [ ! -d "vr_teleop/assets/arctic" ] ; then
   gdown https://drive.google.com/uc?id=1knSFYwz-qmvH1TKajABpPXe09QxgGEtd
   mkdir -p ./vr_teleop/assets/arctic
