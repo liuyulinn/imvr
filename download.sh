@@ -45,27 +45,3 @@ if [ ! -d "alvr_green" ] ; then
   tar -xzf alvr_green.tar.gz
   rm -rf alvr_green.tar.gz
 fi
-
-############################################################
-# Section 2: Download assets                               #
-############################################################
-if [ ! -d "vr_teleop/assets/agents" ] ; then
-  gdown https://drive.google.com/uc?id=1tn1VdE119NEz0syIB9lD5rhYKyD8vo8Z
-  mkdir -p ./vr_teleop/assets/agents
-  tar -xzf agents.tar.gz -C ./vr_teleop/assets/
-  rm -rf agents.tar.gz
-fi
-
-if [ ! -d "vr_teleop/assets/arctic" ] ; then
-  gdown https://drive.google.com/uc?id=1knSFYwz-qmvH1TKajABpPXe09QxgGEtd
-  mkdir -p ./vr_teleop/assets/arctic
-  tar -xzf arctic.tar.gz -C ./vr_teleop/assets/
-  rm -rf arctic.tar.gz
-fi
-
-if [ ! -d "vr_teleop/assets/oakink" ] ; then
-  gdown https://drive.google.com/uc?id=1of7y1ngNVI8k2UqxBrgW8XITwAI6xSHH
-  mkdir -p ./vr_teleop/assets/oakink
-  tar -xzf oakink.tar.gz -C ./vr_teleop/assets/
-  rm -rf oakink.tar.gz
-fi
