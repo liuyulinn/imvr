@@ -18,17 +18,10 @@
   <a href="https://www.stoneztao.com/">Stone Tao</a>,
   <a href="https://cseweb.ucsd.edu/~haosu/">Hao Su</a>
 
-</p>
-  <h3 align="center"><a href="https://openreview.net/pdf?id=26wkb05i8h">PDF</a> | <a href="https://liuyulinn.github.io/imvr.github.io/">Project Page</a> | <a href="https://liuyulinn.github.io/imvr-doc/">Docs</a> </h3>
-  <div align="center"></div>
-</p>
+<p align="center">                                                                                                        
+    <img src="./assets/imvr-sim.gif" width="800" alt="imvr sim demo" />
+</p>                                                                                                                      
 
-<div style="text-align: center;">
-    <video width="800" controls>
-    <source src="./assets/imvr-sim-compressed.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-    </video>
-</div>
 
 ## 🔧 Installation and Usage
 
