@@ -1,0 +1,87 @@
+# Copyright 2024-2025 Kolin Guo. All rights reserved. Authorized usage only.
+#
+# Author: Kolin Guo <guokolin@gmail.com>
+#
+# Version: 0.1.3
+# Last modified: 2024-09-15
+name: compose_base
+
+services:
+  base:
+    # entrypoint: ["/bin/bash", "-c"]
+    command: ["/bin/bash"]
+    environment:
+      PYTHONUNBUFFERED: 1 # Unbuffered Python stdout/stderr
+      SSH_AUTH_SOCK: ${SSH_AUTH_SOCK} # ssh agent
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro" # Local time
+      - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} # ssh agent
+    network_mode: host # Use host network
+    ipc: host # Use host IPC namespace (shared memory)
+    pid: host # Use host PID namespace (process)
+    privileged: true # Give extended privileges to the container, potentially dangerous
+    tty: true # Get colored output when `docker compose up`
+    build:
+      ssh: ["default"] # mount the default ssh agent, use as `RUN --mount=type=ssh git clone ...`
+      network: host # Use host network during build
+
+  gui: &gui
+    extends:
+      service: base
+    environment:
+      DISPLAY: $DISPLAY # Specify the host, graphics controller and display for X
+      XAUTHORITY: $XAUTHORITY # File containing X privilege tokens used by `xauth`
+      XDG_RUNTIME_DIR: ${XDG_RUNTIME_DIR} # XDG directory for user-specific runtime files
+      DBUS_SESSION_BUS_ADDRESS: ${DBUS_SESSION_BUS_ADDRESS} # GUI apps with inter-process communication
+      QT_X11_NO_MITSHM: 1 # Disable MIT-SHM X11 extension for Qt applications
+      # Audio IO
+      PULSE_SERVER: "unix:${XDG_RUNTIME_DIR}/pulse/native" # PulseAudio server socket path
+    volumes:
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw" # For X server communication
+      - ${XDG_RUNTIME_DIR}/bus:${XDG_RUNTIME_DIR}/bus # GUI apps with inter-process communication
+      - ${XDG_RUNTIME_DIR}/dbus-1:${XDG_RUNTIME_DIR}/dbus-1 # GUI apps with inter-process communication
+      - ${XDG_RUNTIME_DIR}/gdm:${XDG_RUNTIME_DIR}/gdm # GNOME Display Manager runtime files (i.e., Xauthority)
+      - ${XDG_RUNTIME_DIR}/ICEauthority:${XDG_RUNTIME_DIR}/ICEauthority # X Inter-Client Exchange authentication
+      # Audio IO
+      - "${XDG_RUNTIME_DIR}/pulse:${XDG_RUNTIME_DIR}/pulse" # PulseAudio server runtime files (i.e., socket/pid)
+      - "${HOME}/.config/pulse/cookie:/home/steam/.config/pulse/cookie" # PulseAudio server cookie for authentication
+
+  gpu: &gpu
+    extends:
+      service: base
+    environment:
+      NVIDIA_DRIVER_CAPABILITIES: all
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  gpu-gui:
+    extends:
+      service: gpu
+    <<: *gui
+
+  # Safe alternatives (--privileged=false)
+  base-safe: &safe
+    extends:
+      service: base
+    privileged: false # DO NOT give extended privileges to the container
+
+  gui-safe:
+    extends:
+      service: gui
+    <<: *safe
+
+  gpu-safe:
+    extends:
+      service: gpu
+    <<: *safe
+
+  gpu-gui-safe:
+    extends:
+      service: gpu-gui
+    <<: *safe

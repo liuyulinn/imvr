@@ -1,0 +1,14 @@
+ik_solver: ./ik_right.yaml
+
+viewer: "vr_gripper"
+tele:
+  order: [right] 
+
+  gripper_action_joint_names: [[]]
+
+  reset_state: true
+
+  config:
+    _type_: "vr_gripper"
+    config: {}
+    

@@ -1,0 +1,42 @@
+wrist_link_name: "base_link"
+hand_model:
+  urdf: ${oc.env:ASSETS}/agents/floating_hand/ability_hand/ability_hand_right.urdf
+  mimic_joints:
+    index_q2: # mimic
+      mimic: index_q1 # source
+      multiplier: 1.05851325
+      offset: 0.72349796
+    middle_q2:
+      mimic: middle_q1
+      multiplier: 1.05851325
+      offset: 0.72349796
+    ring_q2:
+      mimic: ring_q1
+      multiplier: 1.05851325
+      offset: 0.72349796
+    pinky_q2:
+      mimic: pinky_q1
+      multiplier: 1.05851325
+      offset: 0.72349796
+  
+  # add qpos for visualization (vis_retargeing)
+  qpos: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.72349796, 0.72349796, 0.72349796, 0.72349796]
+
+target_joint_names: null
+
+target_origin_link_names:
+  ["base_link", "base_link", "base_link", "base_link", "base_link"]
+target_task_link_names:
+  ["thumb_tip", "index_tip", "middle_tip", "ring_tip", "pinky_tip"]
+scaling_factor: [1.0, 1.0, 1.0, 1.0, 1.15] #2.12997759, 1.10168853, 1.04661863, 1.10421217, 1.26760236, 2.3423723]
+
+# Source refers to the retargeting input, which usually corresponds to the human hand
+# The joint indices of human hand joint which corresponds to each link in the target_link_names
+# target_link_human_indices: [[2, 0, 0, 0, 0], [4, 8, 12, 16, 20]]
+target_link_human_indices: [[0, 0, 0, 0, 0], [4, 8, 12, 16, 20]]
+
+# A smaller alpha means stronger filtering, i.e. more smooth but also larger latency
+low_pass_alpha: 0.2
+
+# calibrate_qpos:
+#   [0, 0, 0, 0, 0, 0, 0.72349796, 0.72349796, 0.72349796, 0.72349796]

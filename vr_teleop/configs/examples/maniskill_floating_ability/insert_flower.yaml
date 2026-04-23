@@ -1,0 +1,18 @@
+_type_: maniskill_env
+config:
+  env_name: InsertFlower-v1
+  robot_uids: "floating_ability_hand_right"
+  control_mode: "pd_joint_pos"
+  # max_episode_steps: 500
+  sim_backend: "cpu"
+  root_pose:
+    p: [0.2, 0., -0.5]
+    q: [0, 0, 0, 1] 
+
+  goal_site:
+    p: [-0.15, 0., 0.3]
+
+  
+  success_condition: true
+  auto_record_success: true
+  auto_record_success_threshold: 40

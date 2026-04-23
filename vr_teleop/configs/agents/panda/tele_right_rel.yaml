@@ -1,0 +1,15 @@
+ik_solver: ./ik_right.yaml
+
+viewer: "vr_gripper"
+
+tele:
+  order: [right] 
+  gripper_action_joint_names: [[panda_finger_joint1]]
+
+  reset_state: true
+
+  
+  config:
+    _type_: "vr_gripper_rel"
+    config: {}
+   

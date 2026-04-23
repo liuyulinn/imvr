@@ -1,0 +1,12 @@
+*
+!docker/user_entrypoint.sh
+!docker/nvidia_icd.json
+!alvr_green/
+!README.md
+!requirements.txt
+!pyproject.toml
+!vr_teleop/__init__.py
+!3rd_party/ManiSkill/README.md
+!3rd_party/ManiSkill/pyproject.toml
+!3rd_party/ManiSkill/setup.py
+!3rd_party/ManiSkill/mani_skill/__init__.py

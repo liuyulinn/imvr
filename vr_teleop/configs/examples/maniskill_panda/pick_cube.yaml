@@ -1,0 +1,13 @@
+_type_: maniskill_env
+
+config:
+  env_name: PickCube-v1
+  robot_uids: "panda"
+  control_mode: "pd_joint_pos"
+
+  root_pose:
+    p: [-0.35, 0.2, -0.9]
+    q: [1, 0, 0, 0] 
+
+  auto_record_success: true
+  auto_record_success_threshold: 40

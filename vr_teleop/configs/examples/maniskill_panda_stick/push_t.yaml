@@ -1,0 +1,15 @@
+_type_: maniskill_env
+config:
+  env_name: PushT-v1
+  robot_uids: "panda_stick"
+  control_mode: "pd_joint_pos"
+
+  root_pose:
+    p: [0., 0.4, -0.7]
+    q: [0.707, 0, 0, -0.707]
+
+  goal_site:
+    p: [-0.15, -0.2, 0.3]
+
+  auto_record_success: true
+  auto_record_success_threshold: 40

@@ -1,0 +1,11 @@
+ik_solver: ../../agents/panda/ik_right.yaml
+
+viewer: "viewer"
+tele:
+  order: [right] 
+  reset_state: true
+
+  gripper_action_joint_names: [[]]
+  config:
+    _type_: "keyboard_gripper"
+    config: {}

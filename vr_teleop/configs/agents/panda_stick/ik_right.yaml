@@ -1,0 +1,17 @@
+robot:
+  urdf: ${oc.env:MANISKILL_ASSETS}/robots/panda/panda_stick.urdf
+  fix_root_link: true
+  cut:
+    root: panda_hand
+    cuts: [panda_hand_tcp] 
+
+
+ik:
+  ee_pose_convertor: [q: [0, 0.707107, 0.707107, 0]] 
+  ee_name: ["panda_hand"]
+  fix_joint_indices: []
+  n_retry: 0
+  max_iterations: 100
+  threshold: 1e-3
+  use_projected_ik: false # true
+  mod_2pi: false # true

@@ -1,0 +1,11 @@
+ik_solver: ../../agents/panda/ik_right.yaml
+
+tele:
+  order: [right] #, 1] # left, right
+  reset_state: true
+
+  gripper_action_joint_names: [[panda_finger_joint1]]
+
+  config:
+    _type_: "keyboard_gripper"
+    config: {}

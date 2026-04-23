@@ -1,0 +1,46 @@
+# Copyright 2024-2025 Kolin Guo. All rights reserved. Authorized usage only.
+#
+# Author: Kolin Guo <guokolin@gmail.com>
+#
+# Version: 0.1.3
+# Last modified: 2024-09-15
+name: vrteleop
+
+services:
+  base:
+    extends:
+      file: compose_base.yaml
+      service: gpu-gui
+    working_dir: /VRTeleop
+    # command:
+    #   - >-
+    #     cd vr_teleop/modules/vr
+    #     && python3 VRBase.py
+    #     && python3 sim_tele.py
+    #       --env configs/xarm_gripper/env.yaml
+    #       --tele configs/xarm_gripper/tele.yaml
+    volumes:
+      - ".:/VRTeleop"
+      # The following folders are not mounted from host.
+      # Instead, they are obtained from the image after building alvr_green
+      - "/VRTeleop/alvr_green"
+    image: kolinguo/vrteleop:latest
+    container_name: vrteleop_base
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        BASE_IMAGE: nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
+        WORKDIR: "/VRTeleop"
+
+  alvr:
+    extends:
+      service: base
+    command:
+      - >-
+        (/VRTeleop/adbforwarder/ADBForwarder &);
+        cd /VRTeleop/alvr_green
+        && while true; do
+          ./build/alvr_streamer_linux/bin/alvr_dashboard;
+        done
+    container_name: vrteleop_alvr

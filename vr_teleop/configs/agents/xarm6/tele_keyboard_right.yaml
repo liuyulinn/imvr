@@ -1,0 +1,12 @@
+ik_solver: ./ik_right.yaml
+
+viewer: "viewer"
+tele:
+  order: [right] 
+  reset_state: true
+
+  gripper_action_joint_names:  [[left_outer_knuckle_joint]]
+
+  config:
+    _type_: "keyboard_gripper"
+    config: {}

@@ -1,0 +1,18 @@
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+numpy==1.26.4
+opencv-python
+transforms3d
+gymnasium
+coacd
+torch==2.4.1
+nlopt
+omegaconf
+loguru
+dataclasses-jsonschema
+argcomplete
+tqdm
+pynput
+termcolor
+pyrealsense2==2.54.2.5684
+blinker==1.4  # weird system dependency on software-properties-common

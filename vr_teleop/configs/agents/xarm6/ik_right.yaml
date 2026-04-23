@@ -1,0 +1,23 @@
+robot:
+  urdf: ${oc.env:MANISKILL_CACHE}/robots/xarm6/xarm6_robotiq.urdf
+  fix_root_link: true
+  cut:
+    root: eef
+    cuts:
+      [
+        left_outer_knuckle,
+        right_outer_knuckle,
+        left_inner_knuckle,
+        right_inner_knuckle,
+      ]
+
+
+ik:
+  ee_pose_convertor: [q: [0, 1, 0, 0]]
+  ee_name: ["eef"]
+  fix_joint_indices: []
+  n_retry: 0
+  max_iterations: 100
+  threshold: 1e-3
+  use_projected_ik: false # true
+  mod_2pi: false # true

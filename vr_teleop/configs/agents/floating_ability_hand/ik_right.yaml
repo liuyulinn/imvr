@@ -1,0 +1,20 @@
+
+robot:
+  urdf: ${oc.env:ASSETS}/agents/floating_hand/ability_hand/ability_hand_right.urdf
+
+  fix_root_link: true
+  cut:
+    root: base_link
+    cuts: [base]
+  
+
+ik:
+  ee_pose_convertor: [q: [0.707, 0, 0.707, 0]] 
+  ee_name: [base_link]
+  fix_joint_indices: []
+  n_retry: 0
+  max_iterations: 100
+  threshold: 1e-4
+  use_projected_ik: false
+  mod_2pi: false
+

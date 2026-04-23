@@ -1,0 +1,59 @@
+{
+    "steamvr_actions.json":
+    {
+        "version": 1,
+        "minimum_required_version": 1,
+        "default_bindings": [
+            {
+                "controller_type": "oculus_touch",
+                "binding_url": "oculus_touch.json"
+            }
+        ],
+        "actions": [
+            {
+                "name": "/actions/global/in/HandSkeletonLeft",
+                "type": "skeleton",
+                "skeleton": "/skeleton/hand/left"
+            },
+            {
+                "name": "/actions/global/in/HandSkeletonRight",
+                "type": "skeleton",
+                "skeleton": "/skeleton/hand/right"
+            }
+        ],
+        "action_sets": [{"name": "/actions/global", "usage": "leftright"}],
+        "localization": [
+            {
+                "language_tag": "en_US",
+                "/actions/global": "Global",
+                "/actions/global/in/HandPoseLeft": "Hand Pose Left",
+                "/actions/global/in/HandPoseRight": "Hand Pose Right",
+                "/actions/global/in/HandSkeletonLeft": "Hand Skeleton Left",
+                "/actions/global/in/HandSkeletonRight": "Hand Skeleton Right"
+            }
+        ]
+    },
+    "oculus_touch.json":
+    {
+        "action_manifest_version": 1,
+        "bindings": {
+            "/actions/global": {
+                "skeleton": [
+                    {
+                        "output": "/actions/global/in/handskeletonleft",
+                        "path": "/user/hand/left/input/skeleton/left"
+                    },
+                    {
+                        "output": "/actions/global/in/handskeletonright",
+                        "path": "/user/hand/right/input/skeleton/right"
+                    }
+                ],
+                "sources": []
+            }
+        },
+        "controller_type": "oculus_touch",
+        "description": "Default Oculus Touch bindings for SteamVR Home.",
+        "name": "Default Oculus Touch Bindings"
+    }
+}
+

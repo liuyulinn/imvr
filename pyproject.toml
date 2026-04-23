@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools>=62.3.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "vr_teleop" = "vr_teleop" }
+
+[project]
+name = "vr_teleop"
+version = "0.0.1"
+dependencies = [
+  "numpy<2.0",
+  "opencv-python",
+  "transforms3d",
+  "gymnasium",
+  "coacd",
+  "torch",
+  "nlopt",
+  "omegaconf",
+  "loguru",
+  "dataclasses-jsonschema",
+  "argcomplete",
+  "tqdm",
+  "pynput",
+  "termcolor",
+]
+requires-python = ">=3.8"
+authors = [{ name = "Yulin Liu", email = "yul266@ucsd.edu" }]
+description = "VR Teleop"
+readme = "README.md"
+license = "MIT"
+
+[project.optional-dependencies]
+dev = ["pytest", "pyright", "ruff", "build", "pytest-xdist", "pytest-forked"]
+
+[tool.ruff]
+preview = true                              # for certain rules and black preview behavior
+exclude = ["3rd_party", "assets", "data"]
+line-length = 120
+
+[tool.ruff.format]
+line-ending = "lf"           # Use `\n` line endings for all files, default on Unix.
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  "F",       # Flake8
+  "E",
+  "W",       # pycodestyle
+  "I",       # isort
+  "UP",      # pyupgrade
+  "B",       # flake8-bugbear
+  "C4",      # flake8-comprehensions
+  "EXE",     # flake8-executable
+  "G",       # flake8-logging-format
+  "SIM",     # flake8-simplify
+  "NPY",     # NumPy
+  "PERF",    # Perflint
+  "PGH004",  # no bare noqa
+  "PIE794",
+  "PIE800",
+  "PIE804",
+  "PIE807",
+  "PIE810",
+  "PLC0131", # type bivariance
+  "PLC0132", # type param mismatch
+  "PLC0205", # string as __slots__
+  "PLE",
+  "PLR0133", # constant comparison
+  "PLR0206", # property with params
+  "PLR1722", # use sys exit
+  "PLW0129", # assert on string literal
+  "PLW0406", # import self
+  "PLW0711", # binary op exception
+  "PLW1509", # preexec_fn not safe with threads
+  "PLW3301", # nested min max
+  "PT006",   # flake8-pytest-style
+  "PT022",
+  "PT023",
+  "PT024",
+  "PT025",
+  "PT026",
+  "PYI",     # flake8-pyi
+  "TRY302",
+  "RUF008",  # mutable dataclass default
+  "RUF013",  # implicit typing.Optional is disallowed
+  "RUF015",  # access first ele in constant time
+  "RUF016",  # type error non-integer index
+  "RUF017",  # avoid quadratic list summation
+]
+ignore = [
+  "UP007",  # allow typing.Optional[int], instead of forcing int | None
+  "UP037",  # allow quotes around type
+  "EXE002", # ntfs has no executable bit
+  "SIM105", # allow try-except-pass blocks
+  "B009",   # allow getattr with constant
+  "B010",   # allow setattr with constant
+  "NPY002", # allow numpy.random
+  "E741",   # allow ambiguous variable names like O, l, I
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+  "F401", # unused import
+]
+"*.pyi" = [
+  "F821",   # allow undefined name
+  "E501",   # line too long
+  "PYI001", # allow TypeVar name without '_' prefix
+  "PYI021", # allow docstrings in stub files
+  "PYI029", # allow __str__ and __repr__ in stubs
+  "PYI032", # allow typing.Any annotations for __eq__ and __ne__
+  "PYI054", # allow long numeric literals
+]
+
+[tool.pytest.ini_options]
+testpaths = ["vr_teleop"]

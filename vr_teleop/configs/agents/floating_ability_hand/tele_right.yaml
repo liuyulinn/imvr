@@ -1,0 +1,17 @@
+
+ik_solver: ./ik_right.yaml
+
+retargeting: ./retargeting_right.yaml
+ 
+viewer: "vr_hand"
+tele:
+  order: [right] #, 1] # left, right
+
+  hand_action_joint_names: [
+      [index_q1, middle_q1, ring_q1, pinky_q1, thumb_q1, thumb_q2],
+    ]
+
+  config:
+    _type_: "vr_hand"
+    config:
+      auto_sync: false
