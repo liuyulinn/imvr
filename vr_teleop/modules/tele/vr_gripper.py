@@ -67,18 +67,15 @@ class VRGripperTeleOperator(TeleOperatorBase):
 
         self.reverse_gripper = config.reverse_gripper
 
-        self.trigger_limit = [[0, 0] for _ in range(self.n_control)]
+        self.trigger_limit = config.trigger_limit
 
-        if config.trigger_limit is not None:
-            self.trigger_limit = config.trigger_limit
-
+        if self.trigger_limit is not None:
+            if not self.reverse_gripper:
+                self.trigger = [self.trigger_limit[idx][1] for idx in range(self.n_control)]
+            else:
+                self.trigger = [self.trigger_limit[idx][0] for idx in range(self.n_control)]
         else:
-            self.trigger_limit = [self.action_limits[idx]["gripper"][0] for idx in range(self.n_control)]
-
-        if not self.reverse_gripper:
-            self.trigger = [self.trigger_limit[idx][1] for idx in range(self.n_control)]
-        else:
-            self.trigger = [self.trigger_limit[idx][0] for idx in range(self.n_control)]
+            self.trigger = [None for _ in range(self.n_control)]
 
         self.trigger_scale = config.trigger_scale
 
@@ -118,18 +115,19 @@ class VRGripperTeleOperator(TeleOperatorBase):
             upper_button_state = self.viewer.up_button_state(self.indices[idx] + 1)  # type: ignore
 
             changed = button_pressed != self.prev_button_pressed[idx]
-            trigger = (
-                cur_qposs[idx][self.slices[f"gripper_{idx}"]] - (upper_button_state - 0.5) * self.trigger_scale * 2
-            ) * (1 if not self.reverse_gripper else -1)
 
-            self.trigger[idx] = np.clip(trigger, self.trigger_limit[idx][0], self.trigger_limit[idx][1])
+            if self.trigger_limit is not None:
+                trigger = (
+                    cur_qposs[idx][self.slices[f"gripper_{idx}"]] - (upper_button_state - 0.5) * self.trigger_scale * 2
+                ) * (1 if not self.reverse_gripper else -1)
+                self.trigger[idx] = np.clip(trigger, self.trigger_limit[idx][0], self.trigger_limit[idx][1])
 
             flag = TeleFlags.NOT_IN_CONTROL if self.in_control[idx] == 0 else TeleFlags.IK_SUCCESS
 
             if changed and (button_pressed == "down"):
                 self.in_control[idx] = 1 - self.in_control[idx]
-                if self.in_control[idx] == 0:
-                    self.trigger[idx] = self.trigger[idx] = (
+                if self.in_control[idx] == 0 and self.trigger_limit is not None:
+                    self.trigger[idx] = (
                         self.trigger_limit[idx][1] if not self.reverse_gripper else self.trigger_limit[idx][0]
                     )
             flag = TeleFlags.IK_SUCCESS if self.in_control[idx] == 1 else TeleFlags.NOT_IN_CONTROL
@@ -250,7 +248,7 @@ class VRGripperTeleOperator(TeleOperatorBase):
 
                     flags[idx] = TeleFlags.IK_FAILED
 
-                if len(self.slices[f"gripper_qpos_{idx}"]) != 0:
+                if len(self.slices[f"gripper_qpos_{idx}"]) != 0 and states["triggers"][idx] is not None:
                     actions[idx][self.slices[f"gripper_{idx}"]] = states["triggers"][idx]
 
                 if self.config.move_wheel and len(self.slices.get(f"arm_qpos_{idx}", [])) > 0:
@@ -261,7 +259,7 @@ class VRGripperTeleOperator(TeleOperatorBase):
             else:
                 actions[idx][self.slices[f"arm_{idx}"]] = cur_qposs[idx][self.slices[f"arm_qpos_{idx}"]]
 
-                if len(self.slices[f"gripper_qpos_{idx}"]) != 0:
+                if len(self.slices[f"gripper_qpos_{idx}"]) != 0 and states["triggers"][idx] is not None:
                     actions[idx][self.slices[f"gripper_{idx}"]] = states["triggers"][idx]
 
         for idx in range(self.n_control):
