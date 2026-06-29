@@ -1,7 +1,9 @@
+import importlib.util
 import os
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Type, TypeVar
+from typing import Any, Dict, Iterable, Type, TypeVar
 import mani_skill
 import tyro
 import yaml
@@ -41,6 +43,41 @@ def _add_maniskill_cache_env():
         mani_skill_cache = os.path.expanduser("~/.maniskill/data")
         print(f"MANISKILL_CACHE is set to {mani_skill_cache}, you can modify this behavior in miniussd.assets.py")
         os.environ["MANISKILL_CACHE"] = str(mani_skill_cache)
+
+
+_LOADED_MODULES: set[str] = set()
+
+
+def _load_modules(paths: Iterable[str | Path], base_path: str | Path | None = None) -> None:
+    """Import Python modules from file paths for their side effects.
+
+    These are listed under the ``_include_`` key of a config yaml. Importing them
+    triggers registration code (e.g. ManiSkill's ``@register_agent()``) so that the
+    referenced robots/environments are available when the config is built.
+
+    Paths may be absolute or relative to ``base_path`` (the including yaml file).
+    Each path is imported at most once per process.
+    """
+    for raw_path in paths:
+        path = Path(raw_path).expanduser()
+        if not path.is_absolute() and base_path is not None:
+            path = Path(base_path).parent / path
+        path = path.resolve()
+
+        key = str(path)
+        if key in _LOADED_MODULES:
+            continue
+        if not path.exists():
+            raise FileNotFoundError(f"_include_ module not found: {path}")
+
+        module_name = f"_included_{path.stem}"
+        spec = importlib.util.spec_from_file_location(module_name, key)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Could not load module from {path}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        _LOADED_MODULES.add(key)
 
 
 _add_assets_env()
@@ -105,6 +142,10 @@ class Config:
     def from_yaml(cls: Type[T], path: str) -> T:
         cfg = OmegaConf.load(path)
         cfg_dict = OmegaConf.to_container(cfg, resolve=True)
+        # import any _include_ python modules for their side effects (e.g. agent registration)
+        includes = cfg_dict.pop("_include_", None)
+        if includes:
+            _load_modules(includes, base_path=path)
         # recursively load sub-paths
         cfg_dict = recursive_load_paths(cfg_dict, path)
         return cls.from_dict(cfg_dict)

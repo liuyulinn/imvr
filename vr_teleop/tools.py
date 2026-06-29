@@ -146,8 +146,15 @@ class replay(TaskConfig):
     """Number of environments to run to replay trajectories. With CPU backends typically this is parallelized via python multiprocessing.
     For parallelized simulation backends like physx_gpu, this is parallelized within a single python process by leveraging the GPU."""
 
+    include: Annotated[list[str], tyro.conf.arg(aliases=["-i"])] = field(default_factory=list)
+    """Python files to import before replaying, for their registration side effects
+    (e.g. ManiSkill's @register_agent() / @register_env()). Needed when the trajectory
+    uses a custom robot/env such as 3rd_party/dexmanip/robots/floating_sharpa.py.
+    Pass one or more paths, e.g. -i path/to/robot.py path/to/env.py."""
+
     def run(self, path: Path):
-        cmd = [sys.executable, "-m", "mani_skill.trajectory.replay_trajectory"]
+        # Build the arguments passed to mani_skill's replay_trajectory.
+        cmd = []
 
         # Build command with all arguments
         cmd.extend(["--traj-path", str(path)])
@@ -191,10 +198,32 @@ class replay(TaskConfig):
         if self.record_rewards:
             cmd.append("--record-rewards")
 
+        # Choose how to launch replay_trajectory. When extra modules need to be
+        # imported for their registration side effects, they must be imported in
+        # the *subprocess* (the parent process importing them has no effect), so we
+        # use a `-c` bootstrap that imports each file by path before calling main().
+        if self.include:
+            includes = [str(Path(p).expanduser().resolve()) for p in self.include]
+            for p in includes:
+                if not Path(p).exists():
+                    raise FileNotFoundError(f"--include module not found: {p}")
+            bootstrap = (
+                "import importlib.util, os, sys\n"
+                f"for p in {includes!r}:\n"
+                "    spec = importlib.util.spec_from_file_location('_inc_' + os.path.basename(p), p)\n"
+                "    m = importlib.util.module_from_spec(spec)\n"
+                "    spec.loader.exec_module(m)\n"
+                "from mani_skill.trajectory.replay_trajectory import main, parse_args\n"
+                "main(parse_args(sys.argv[1:]))\n"
+            )
+            full_cmd = [sys.executable, "-c", bootstrap] + cmd
+        else:
+            full_cmd = [sys.executable, "-m", "mani_skill.trajectory.replay_trajectory"] + cmd
+
         # Execute
         try:
-            print(f"Running: {' '.join(cmd)}")
-            subprocess.run(cmd, check=True)
+            print(f"Running: {' '.join(full_cmd)}")
+            subprocess.run(full_cmd, check=True)
             print("Replay completed!")
         except subprocess.CalledProcessError as e:
             print(f"Replay failed: {e}")
